@@ -1,6 +1,8 @@
 package com.example.android.weatherforecast;
 
 import android.app.ListActivity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -89,7 +91,7 @@ public class MainActivity extends ListActivity {
     }
 
 
-    private class JsonParser extends  AsyncTask<String, String, JSONObject>{
+    private class JsonParser extends  AsyncTask<String, String, List<WeatherModel>>{
         final String TAG = "JsonParser.java";
 
         InputStream is = null;
@@ -102,7 +104,7 @@ public class MainActivity extends ListActivity {
 
 
         @Override
-        protected JSONObject doInBackground(String...params) {
+        protected List<WeatherModel> doInBackground(String...params) {
             try {
 
                 URL Url = new URL(params[0]);
@@ -143,15 +145,32 @@ public class MainActivity extends ListActivity {
 
             // return JSON String
             Log.d("Confirmed", "Got JSON");
-            return jObj;
+            weatherList = WeatherParser.ParseFeed(jObj);
+            for (WeatherModel WeatherModel: weatherList )
+            try {
+                String Base_Url = "http://openweathermap.org/img/w/";
+                String icon_Url = Base_Url + WeatherModel.getIcon() + ".png";
+                Log.d("URL:", icon_Url);
+                InputStream in = new URL(icon_Url).openStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(in);
+                WeatherModel.setImage(bitmap);
+                in.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return weatherList;
         }
 
 
         @Override
-        protected void onPostExecute(JSONObject o) {
+        protected void onPostExecute(List<WeatherModel> o) {
             super.onPostExecute(o);
-            Log.d("Json:", o.toString());
-            UpdateDisplay(WeatherParser.ParseFeed(o));
+
+            UpdateDisplay(weatherList);
+
+
 
         }
 
