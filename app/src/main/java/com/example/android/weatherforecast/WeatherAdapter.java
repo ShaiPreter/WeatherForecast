@@ -1,6 +1,9 @@
 package com.example.android.weatherforecast;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,12 +38,14 @@ public class WeatherAdapter extends ArrayAdapter<WeatherModel> {
         View view = inflater.inflate(R.layout.weather_item, parent, false);
 
         WeatherModel weather = weatherlist.get(position);
+        ImageView image = (ImageView) view.findViewById(R.id.image);
         TextView day = (TextView) view.findViewById(R.id.day);
         TextView temperature = (TextView) view.findViewById(R.id.temperature);
         TextView description = (TextView) view.findViewById(R.id.description);
+        Bitmap original = weather.getImage();
+        Bitmap resized = Bitmap.createScaledBitmap(original, 175, 175, true);
+        image.setImageBitmap(resized);
         String Temperature = Integer.toString(weather.getTemperature()) + "°C";
-        Log.d("Temperature:", Temperature);
-        Log.d("Temperature:", weather.getDescription());
 
         day.setText(weather.getDate());
         temperature.setText(Temperature);

@@ -1,5 +1,7 @@
 package com.example.android.weatherforecast;
 
+import android.graphics.Bitmap;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -58,5 +60,15 @@ public class WeatherModel {
     }
 
     private int position;
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    private Bitmap image;
 
 }
